@@ -190,7 +190,7 @@ speechtxtbtn.addEventListener('click',()=>{
 
 
         speakingbtn.addEventListener('click',()=>{
-            voicetext(txtareavt,vtdiv);
+            voicetext(txtareavt,vtdiv,speakingbtn);
         })
 
         closevt.addEventListener('click', () => {
@@ -201,15 +201,13 @@ speechtxtbtn.addEventListener('click',()=>{
     
 })
 
-function voicetext(txtareavt,vtdiv){
+function voicetext(txtareavt,vtdiv,speakingbtn){
     window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; 
   
     const recognition = new SpeechRecognition(); 
     recognition.interimResults = true; 
 
     const existingpause=document.querySelector('.pausebtn');
-
-   
 
     recognition.addEventListener('result', e => { 
         const transcript = Array.from(e.results) 
@@ -219,7 +217,12 @@ function voicetext(txtareavt,vtdiv){
             txtareavt.innerHTML=`${transcript}`;
     })
 
-    recognition.start();
+    speakingbtn.addEventListener('click',()=>{
+        recognition.start();
+        if(existingpause!=null){
+            existingpause.innerHTML='Pause';
+        }
+    })
 
     recognition.addEventListener('end',()=>{
         recognition.start();
@@ -233,13 +236,8 @@ function voicetext(txtareavt,vtdiv){
         pausebtn.innerHTML='Pause';
     
         pausebtn.addEventListener('click', () => {
-            if (recognition.state === 'running') {
               recognition.stop();
               pausebtn.innerHTML = 'Resume'; // Change button text to "Resume"
-            } else {
-              recognition.start();
-              pausebtn.innerHTML = 'Pause'; // Change button text back to "Pause"
-            }
           });
         
         vtdiv.appendChild(pausebtn);
